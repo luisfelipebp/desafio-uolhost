@@ -36,6 +36,9 @@ Esta API oferece funcionalidades para o gerenciamento de jogadores, permitindo a
   "grupo": "VINGADORES"
 }
 ```
+
+Ao criar um novo jogador, uma API externa será utilizada para atribuir um codinome aleatório ao usuário. Utilizando o formato JSON para os vingadores e o formato XML para a liga da justiça.
+
 ## Configuração Padrão
 
 - **URL Base:** `http://localhost:8080`
