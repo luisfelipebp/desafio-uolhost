@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
 
 @Service
@@ -33,45 +32,64 @@ public class JogadorService {
         return jogadorRepository.findAll();
     }
 
+    public void deleteById(Long id){
+        jogadorRepository.deleteById(id);
+    }
+
     public Jogador createJogador(JogadorDTO jogadorDTO) throws Exception {
         Jogador newJogador = new Jogador(jogadorDTO);
 
         if(jogadorDTO.grupo().equals(GrupoEnum.LIGA_DA_JUSTICA)){
-            List<String> liga = consumeXmlService.consumeXml();
-            int i = 0;
-            String codinome = liga.get(i);
-            while(jogadorRepository.findByCodinome(codinome) != null){
-                if(i == liga.size() - 1){
-                    throw new Exception("Não existem mais usuários da liga da justiça disponíveis.");
-               }
-                i++;
-                codinome = liga.get(i);
-            }
-
-            newJogador.setCodinome(codinome);
+            String codinomeLigaDaJustica = obterCodinomeLigaDaJustica();
+            newJogador.setCodinome(codinomeLigaDaJustica);
             jogadorRepository.save(newJogador);
         }
 
 
         if(jogadorDTO.grupo().equals(GrupoEnum.VINGADORES)){
-            List<VingadorDTO> vingadores = consumeJsonService.consumeJson();
-
-            int i = 0;
-            String codinome = vingadores.get(i).codinome();
-            while(jogadorRepository.findByCodinome(codinome) != null){
-                if(i == vingadores.size() - 1){
-                    throw new Exception("Não existem mais usuários dos vingadores disponíveis.");
-                }
-                i++;
-                codinome = vingadores.get(i).codinome();
-            }
-
-            newJogador.setCodinome(codinome);
+            String codinomeVingador = obterCodinomeVingadores();
+            newJogador.setCodinome(codinomeVingador);
             jogadorRepository.save(newJogador);
 
         }
 
         return newJogador;
+    }
+
+    private String obterCodinomeLigaDaJustica() throws Exception {
+        List<String> liga = consumeXmlService.consumeXml();
+
+        int i = 0;
+        if(liga.isEmpty()){
+            throw new Exception("Falha ao carregar lista de codinomes");
+        }
+        String codinome = liga.get(i);
+        while(jogadorRepository.findByCodinome(codinome) != null){
+            if(i == liga.size() - 1){
+                throw new Exception("Não existem mais usuários da liga da justiça disponíveis.");
+            }
+            i++;
+            codinome = liga.get(i);
+        }
+        return codinome;
+    }
+
+    private String obterCodinomeVingadores() throws Exception {
+        List<VingadorDTO> vingadores = consumeJsonService.consumeJson();
+
+        int i = 0;
+        if(vingadores.isEmpty()){
+            throw new Exception("Falha ao carregar lista de codinomes");
+        }
+        String codinome = vingadores.get(i).codinome();
+        while(jogadorRepository.findByCodinome(codinome) != null){
+            if(i == vingadores.size() - 1){
+                throw new Exception("Não existem mais usuários dos vingadores disponíveis.");
+            }
+            i++;
+            codinome = vingadores.get(i).codinome();
+    }
+        return codinome;
     }
 
 }
