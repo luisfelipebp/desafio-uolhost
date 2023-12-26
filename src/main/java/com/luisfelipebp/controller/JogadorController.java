@@ -27,6 +27,12 @@ public class JogadorController {
         return ResponseEntity.ok().body(jogadorService.findById(id));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteById(@PathVariable Long id){
+        jogadorService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping
     public ResponseEntity<Jogador> createJogador(@RequestBody JogadorDTO jogadorDTO) throws Exception {
         Jogador jogador = jogadorService.createJogador(jogadorDTO);
