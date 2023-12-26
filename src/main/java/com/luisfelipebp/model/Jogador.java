@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class Jogador {
 
     public Jogador(JogadorDTO jogadorDTO){
+        this.id = jogadorDTO.id();
         this.nome = jogadorDTO.nome();
         this.email = jogadorDTO.email();
         this.telefone = jogadorDTO.telefone();
